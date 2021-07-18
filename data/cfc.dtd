@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE cfc
+[
+
+<!ELEMENT RECORD (RECORDNUM PAPERNUM MEDLINENUM AUTHORS TITLE SOURCE MAJORSUBJ MINORSUBJ? (ABSTRACT|EXTRACT) REFERENCES? CITATIONS?)>
+<!-- Each document record includes these 11 fields -->
+
+<!ELEMENT RECORDNUM (#PCDATA)>
+<!-- Serial id number -->
+
+<!ELEMENT PAPERNUM (#PCDATA)>
+<!-- The first two digits give the year of publication,
+     and the rest three digits range from 1 to the number of docs
+     published that year. -->
+
+<!ELEMENT MEDLINENUM (#PCDATA)>
+<!-- Medline Accession Number: CF is a subset of the MEDLINE database. -->
+
+<!ELEMENT AUTHORS (AUTHOR+)>
+		<!ELEMENT AUTHOR (#PCDATA)>
+<!-- List of authors -->
+
+<!ELEMENT TITLE (#PCDATA)>
+<!-- Document title -->
+
+<!ELEMENT SOURCE (#PCDATA)>
+<!-- Bibliographic citation of source. -->
+
+<!ELEMENT MAJORSUBJ (TOPIC+)>
+<!ELEMENT MINORSUBJ (TOPIC+)>
+		<!ELEMENT TOPIC (#PCDATA)>
+
+<!-- The Medical Subject Headings (MeSH) and subheadings
+     representing the major and minor subjects of the document. The Medical
+     Subject Headings are shown in capital letters and have been assigned by
+     expert indexers. The two-letter symbols are subject subheadings, also
+     assigned manually from a controlled vocabulary (see the MeSH vocabulary
+     published by the National Library of Medicine). -->
+
+<!ELEMENT ABSTRACT (#PCDATA)>
+<!ELEMENT EXTRACT (#PCDATA)>
+
+<!-- The abstract of the document, or in the case of a
+     document with no published abstract, an extract from the text. -->
+
+<!ELEMENT REFERENCES (CITE+)>
+<!!-- The complete list of references appearing in the document,
+      excluding private comunications and unpublished documents. -->
+
+<!ELEMENT CITATIONS (CITE+)>
+<!-- A comprehensive list of citations to the document, as indexed
+     in the SCISEARCH/DIAOLG files. -->
+
+<!ELEMENT CITE EMPTY>
+<!ATTLIST CITE 
+	num CDATA #REQUIRED;
+	author CDATA #REQUIRED;
+	publication CDATA #REQUIRED;
+	d1 CDATA #REQUIRED;
+	d2 CDATA #REQUIRED;
+	d3 CDATA #REQUIRED>
+<!-- A reference to a single document -->
+
+<!ENTITY gt     CDATA "&#62;"   -- greater than -->
+<!ENTITY lt     CDATA "&#60;"   -- less than    -->
+
+]>
