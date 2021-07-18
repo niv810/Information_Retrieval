@@ -28,8 +28,8 @@ def doc_part(v, doc, part):
     tokenizer = RegexpTokenizer(r'\w+')
     txt = tokenizer.tokenize(txt[0].text)
     for term in txt:
-        term = ps.stem(term.lower())
-        if term not in stopwords:
+        if term.lower() not in stopwords:
+            term = ps.stem(term.lower())
             if term not in v:
                 v[term] = 0
             v[term] += 1
