@@ -1,5 +1,4 @@
 import math
-import sys
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import PorterStemmer
 import creation
@@ -49,16 +48,17 @@ def get_relevance_docs(r, q_len, docs_len):
     return dict(sorted(r.items(), key=lambda item: item[1], reverse=True))
 
 
-def main():
-    v = get_question(sys.argv[2])
-    file = open(sys.argv[1])
+def query(path, q):
+    v = get_question(q)
+    file = open(path)
     d = json.load(file)
-    inverted_index = d["ir"]
+    inverted_index = d["inverted_index"]
     r, q_len = get_question_vector(inverted_index, v)
     docs_len = d["len_docs"]
     r = get_relevance_docs(r, q_len, docs_len)
-    print(r)
-
-
-if __name__ == "__main__":
-    main()
+    f = open("ranked_query_docs.txt", "w")
+    max_val = list(r.values())[0]
+    for doc in r:
+        if r[doc] < max_val/4:
+            break
+        f.write(doc+"\n")

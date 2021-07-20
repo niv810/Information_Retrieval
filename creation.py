@@ -20,15 +20,15 @@ stopwords = {"ourselves", "hers", "between", "yourself", "but", "again", "there"
              "doing", "it", "how", "further", "was", "here", "than"}
 
 
-# stop_words = nltk.corpus.stopwords.words('english')
 def doc_part(v, doc, part):
     ps = PorterStemmer()
     txt = doc.findall(f"./{part}")
     tokenizer = RegexpTokenizer(r'\w+')
     txt = tokenizer.tokenize(txt[0].text)
     for term in txt:
-        if term.lower() not in stopwords:
-            term = ps.stem(term.lower())
+        term = term.lower()
+        if term.isalpha() and (term not in stopwords):
+            term = ps.stem(term)
             if term not in v:
                 v[term] = 0
             v[term] += 1
@@ -55,14 +55,12 @@ def add_docs_from_files(path):
             total_docs += 1
             v = corpus(doc)
             doc_id = doc.find("./RECORDNUM")
-#            d["len_docs"][doc_id.text] = len(v)  # need to fix
             max_tf = max(v.values())
             for term in v:
                 if term not in inverted_index:
                     inverted_index[term] = [0, {}]
                 inverted_index[term][0] += 1
                 inverted_index[term][1][int(doc_id.text)] = v[term] / max_tf
-#    total_docs = len(d["len_docs"])  # need to fix
     for term in inverted_index:
         inverted_index[term][0] = math.log2(total_docs / inverted_index[term][0])
         idf = inverted_index[term][0]
