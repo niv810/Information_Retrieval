@@ -2,13 +2,12 @@ import xml.etree.ElementTree as ET
 import json
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import PorterStemmer
-import sys
 import math
 
 total_docs = 0
-ir = {}
+inverted_index = {}
 len_docs = {}
-d = {"ir": ir, "len_docs": len_docs}
+d = {"inverted_index": inverted_index, "len_docs": len_docs}
 stopwords = {"ourselves", "hers", "between", "yourself", "but", "again", "there", "about", "once", "during", "out",
              "very", "having", "with", "they", "own", "an", "be", "some", "for", "do", "its", "yours", "such", "into",
              "of", "most", "itself", "other", "off", "is", "s", "am", "or", "who", "as", "from", "him", "each", "the",
@@ -28,7 +27,7 @@ def doc_part(v, doc, part):
     tokenizer = RegexpTokenizer(r'\w+')
     txt = tokenizer.tokenize(txt[0].text)
     for term in txt:
-        if term.lower() not in stopwords:
+        if term.lower() and term.lower() not in stopwords:
             term = ps.stem(term.lower())
             if term not in v:
                 v[term] = 0
@@ -59,16 +58,16 @@ def add_docs_from_files(path):
 #            d["len_docs"][doc_id.text] = len(v)  # need to fix
             max_tf = max(v.values())
             for term in v:
-                if term not in ir:
-                    ir[term] = [0, {}]
-                ir[term][0] += 1
-                ir[term][1][doc_id.text] = v[term]/max_tf
+                if term not in inverted_index:
+                    inverted_index[term] = [0, {}]
+                inverted_index[term][0] += 1
+                inverted_index[term][1][int(doc_id.text)] = v[term] / max_tf
 #    total_docs = len(d["len_docs"])  # need to fix
-    for term in ir:
-        ir[term][0] = math.log2(total_docs/ir[term][0])
-        idf = ir[term][0]
-        for num_doc in ir[term][1]:
-            tf = ir[term][1][num_doc]
+    for term in inverted_index:
+        inverted_index[term][0] = math.log2(total_docs / inverted_index[term][0])
+        idf = inverted_index[term][0]
+        for num_doc in inverted_index[term][1]:
+            tf = inverted_index[term][1][num_doc]
             if num_doc not in len_docs:
                 len_docs[num_doc] = 0
             len_docs[num_doc] += (idf * tf)**2
@@ -76,17 +75,9 @@ def add_docs_from_files(path):
         len_docs[doc] = math.sqrt(len_docs[doc])
 
 
-def inverted_index(path):
+def create(path):
     add_docs_from_files(path)
     j = json.dumps(d)
     f = open("vsm_inverted_index.json", "w")
     f.write(j)
     f.close()
-
-
-def main():
-    inverted_index(sys.argv[1])
-
-
-if __name__ == "__main__":
-    main()
