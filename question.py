@@ -1,21 +1,11 @@
 import math
-from nltk.tokenize import RegexpTokenizer
-from nltk.stem import PorterStemmer
-import creation
+from creation import doc_tokenize
 import json
 
 
 def get_question(question):
     v = {}
-    ps = PorterStemmer()
-    tokenizer = RegexpTokenizer(r'\w+')
-    txt = tokenizer.tokenize(question)
-    for term in txt:
-        if term.lower() not in creation.stopwords:
-            term = ps.stem(term.lower())
-            if term not in v:
-                v[term] = 0
-            v[term] += 1
+    doc_tokenize(question, v)
     return v
 
 

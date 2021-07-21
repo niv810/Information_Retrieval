@@ -20,11 +20,10 @@ stopwords = {"ourselves", "hers", "between", "yourself", "but", "again", "there"
              "doing", "it", "how", "further", "was", "here", "than"}
 
 
-def doc_part(v, doc, part):
+def doc_tokenize(doc, v):
     ps = PorterStemmer()
-    txt = doc.findall(f"./{part}")
     tokenizer = RegexpTokenizer(r'\w+')
-    txt = tokenizer.tokenize(txt[0].text)
+    txt = tokenizer.tokenize(doc)
     for term in txt:
         term = term.lower()
         if term.isalpha() and (term not in stopwords):
@@ -32,6 +31,11 @@ def doc_part(v, doc, part):
             if term not in v:
                 v[term] = 0
             v[term] += 1
+
+
+def doc_part(v, doc, part):
+    txt = doc.findall(f"./{part}")
+    doc_tokenize(txt[0].text, v)
 
 
 def corpus(doc):
