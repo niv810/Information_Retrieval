@@ -3,12 +3,14 @@ from creation import doc_tokenize
 import json
 
 
+# building corpus for the question
 def get_question(question):
     v = {}
     doc_tokenize(question, v)
     return v
 
 
+# create vector of relevance document for the question and compute his length
 def get_question_vector(inverted_index, v):
     r = {}
     q_len = 0
@@ -30,6 +32,7 @@ def get_question_vector(inverted_index, v):
     return r, q_len
 
 
+# compute cosine similarity for every document in the vector of relevance documents and sort them
 def get_relevance_docs(r, q_len, docs_len):
     for doc in r:
         s = r[doc]
@@ -38,6 +41,8 @@ def get_relevance_docs(r, q_len, docs_len):
     return dict(sorted(r.items(), key=lambda item: item[1], reverse=True))
 
 
+# call the rest of the functions in this file and writing to output file all relevance documents with score higher
+# than the threshold
 def query(path, q):
     v = get_question(q)
     file = open(path)
@@ -52,3 +57,5 @@ def query(path, q):
         if r[doc] < max_val/4:
             break
         f.write(doc+"\n")
+    f.close()
+    file.close()

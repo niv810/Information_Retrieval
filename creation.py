@@ -20,6 +20,8 @@ stopwords = {"ourselves", "hers", "between", "yourself", "but", "again", "there"
              "doing", "it", "how", "further", "was", "here", "than"}
 
 
+# input: part of doc/ question, corpus
+# this function tokenize the text, remove stopwords and punctuation marks, and add the stems to the corpus
 def doc_tokenize(doc, v):
     ps = PorterStemmer()
     tokenizer = RegexpTokenizer(r'\w+')
@@ -33,11 +35,14 @@ def doc_tokenize(doc, v):
             v[term] += 1
 
 
+# building the corpus by the specific part (title/ extract/ abstract)
 def doc_part(v, doc, part):
     txt = doc.findall(f"./{part}")
     doc_tokenize(txt[0].text, v)
 
 
+# input: document
+# output: corpus for the document
 def corpus(doc):
     v = {}
     doc_part(v, doc, "TITLE")
@@ -50,6 +55,8 @@ def corpus(doc):
     return v
 
 
+# input: path to directory that contain the XML files
+# the function building inverted index from every XML RECORD in the XML files and compute vector length for them
 def add_docs_from_files(path):
     global total_docs
     for i in range(74, 80):
